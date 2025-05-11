@@ -30,11 +30,11 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     minLength: [8, "password must be atleast 8 characters long"],
-    select: false,
+    
   },
   role: {
     type: String,
-    required: true,
+    // required: true,
     enum: ["seller", "buyer", "admin"],
     default: "buyer",
     trim: true,
@@ -62,8 +62,10 @@ userSchema.pre('save' , async function(next){
     return next
 })
 // COMAPRE THE USER PASSWORD
-userSchema.methods.comparePassword = async function(password)
+userSchema.methods.comparePassword = async function(password )
 {
+  // console.log(password , this.password)
+  // console.log(hashedpassword)
     return await bcrypt.compare(password , this.password)
 }
 // generate access token : token that is given to user after login and it is short lived

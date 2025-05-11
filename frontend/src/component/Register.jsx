@@ -21,14 +21,15 @@ function Register() {
     setPassword(e.target.value)
   }
 
-  const handleSubmit = async(e)=>{
+  const handleSubmit = async(e)=>{  
     e.preventDefault();
     const newUser = {
       name:fullname,
       email,password
     }
     const response = await axios.post('http://localhost:8000/api/v1/user/register',newUser)
-    if(response.status===201){
+   try{
+     if(response.status===201){
      const data = response.data;
       setUser(data.user)
       localStorage.setItem('token',data.token)
@@ -36,6 +37,12 @@ function Register() {
       setEmail('')
       setPassword('')
       navigate('/home')
+    }
+   }
+ 
+    catch(err)
+    {
+      console.log(err.response.data.message)
     }
   }
   const handleFullname = (e)=>{

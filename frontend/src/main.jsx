@@ -5,8 +5,12 @@ import React from 'react'
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import UserContext from './context/UserContext.jsx'
+// import AdminContext from './context/AdminContext.jsx'
+import AdminProvider from './context/AdminProvider.jsx'
 
 createRoot(document.getElementById('root')).render(
+  <AdminProvider>
+
  <UserContext>
   <BrowserRouter>
   <StrictMode>
@@ -14,4 +18,6 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>
  </BrowserRouter>
  </UserContext>,
+  </AdminProvider>
+
 )

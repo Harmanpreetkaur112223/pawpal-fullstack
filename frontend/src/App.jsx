@@ -9,6 +9,7 @@ import Footer from './component/Footer'
 import Login from './component/login'
 import Register from './component/Register'
 import Cart from './component/Cart'
+import Dashboard from './Pages/Dashboard'
 function App() {
   return (
     <>
@@ -22,6 +23,7 @@ function App() {
        <Route path = '/login' element={<Login/>}/>
        <Route path = '/register' element={<Register/>}/>
        <Route path = '/cart' element={<Cart/>}/>
+       <Route path = '/dashboard' element={<Dashboard/>}/>
 
       </Routes>
       {/* </div> */}

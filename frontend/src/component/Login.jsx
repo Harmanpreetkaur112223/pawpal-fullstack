@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
+import { useContext } from "react";
+import { UserDataContext } from "../context/UserContext";
 
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
 
   const [email , setEmail] = useState('')
   const [password , setPassword] = useState('')
 
-
+  const {setUser} = useContext(UserDataContext)
   const navigate = useNavigate()
   const handleEmail = (e)=>{
     setEmail(e.target.value)
@@ -20,6 +22,33 @@ function Login() {
 
   const handleSubmit = async(e)=>{
     e.preventDefault()
+    const user = {
+      email,
+      password
+
+    }
+
+    const response = await axios.post(`http://localhost:8000/api/v1/user/login`,user)
+    if(response.status == 200)
+    {
+      const data = response.data
+      setUser(data.user)
+
+      localStorage.setItem('token',data.accessToken)
+      setEmail('')
+      setPassword('')
+      navigate('/home')
+
+    }
+    if(response.status == 404)
+    {
+      alert('credentials are wrong')
+    }
+    else if(response.status == 401)
+    {
+      alert('invalid email or password')
+    }
+
  
   }
 

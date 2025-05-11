@@ -19,13 +19,13 @@ import sendEmail from "../utilities/sendEmail.js";
         const data = req.body;
         console.log(data)
         const {name , email ,password   } = data;
-        if(!(name || email || password ||role)){
+        if(!(name || email || password )){
             console.log("here")
             res.status(400).json({message : 'All credentials are required'})
         }
         const isUserExisted = await User.findOne({email:email});
         console.log(isUserExisted)
-        if(isUserExisted)return res.status(400).json({message:isUserExisted}) 
+        if(isUserExisted)return res.status(400).json({message:"User is already registered"}) 
         const newUser =  new User(data)
         const savedUser = await newUser.save();
         console.log('saved user is ' , savedUser)
@@ -54,21 +54,26 @@ import sendEmail from "../utilities/sendEmail.js";
 const LoginUser = asyncHandler(
     async(req , res , next)=>{
         const {email , password} = req.body;
-        if(!(email && password))res.status(400).json({
+        // console.log(email ,password)
+        if(!(email && password))res.status(404).json({
             message:'Email and password are required'
         })
         let user = await User.findOne({email})
+        // console.log(user)
         if(!user)res.status(401).json({
             message:'Invalid email or password'
         })
-        const isPwdCorrect = await user.comparePassword(password)
+        const isPwdCorrect = await user.comparePassword(password )
+        // console.log(isPwdCorrect)
         if(!isPwdCorrect)res.status(401).json({message:'Invalid email or password'})
-        
+        //  user = user.select("-password")
+        // console.log(user)
             const accessToken  = await user.generateAccessToken()
             const refreshToken = await user.generateRefreshToken()
             user.refreshToken = refreshToken
             user = await user.save()
-
+            user = await User.findOne({email}).select(" -password ")
+            // console.log(user)
             res.cookie('accessToken' , accessToken,{
                 httpOnly:true,
                 secure:true,
@@ -77,8 +82,9 @@ const LoginUser = asyncHandler(
                 httpOnly:true,
                 secure:true,
                 sameSite:'strict'
-            }).status(201).json({
-                message:'successfully logged in'
+            }).status(200).json({
+               user,
+               accessToken
             })
 
     }   
